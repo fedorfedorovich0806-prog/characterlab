@@ -1,0 +1,118 @@
+// Prisma schema for c.ai
+// Для PostgreSQL замените provider на "postgresql" и DATABASE_URL на postgres://...
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String      @id @default(cuid())
+  email        String      @unique
+  username     String      @unique
+  passwordHash String
+  avatarUrl    String?
+  bio          String?
+  persona      String?     // описание себя для персонажей
+  role         String      @default("user") // user | admin
+  isPremium    Boolean     @default(false)
+  theme        String?     // кастомная тема (для Plus)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  characters   Character[] @relation("AuthorCharacters")
+  chats        Chat[]
+  likes        Like[]
+  notifications Notification[]
+}
+
+model Character {
+  id            String      @id @default(cuid())
+  name          String
+  tagline       String?
+  description   String
+  avatarUrl     String?
+  kind          String      @default("character") // character | scenario
+  personality   String      // стиль речи, характер
+  temperament   String?     // спокойный / агрессивный / и т.д.
+  systemPrompt  String      // главный system prompt
+  memory        String?     // что он должен помнить о пользователе
+  knowledge     String?     // база знаний (лор, файлы)
+  greeting      String      // приветственное сообщение
+  exampleDialog String?     // пример диалога
+  category      String      @default("general")
+  tags          String      @default("") // CSV, чтобы работало в SQLite
+  isPublic      Boolean     @default(true)
+  likesCount    Int         @default(0)
+  messagesCount Int         @default(0)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  authorId      String
+  author        User        @relation("AuthorCharacters", fields: [authorId], references: [id], onDelete: Cascade)
+
+  chats         Chat[]
+  likes         Like[]
+
+  @@index([isPublic, createdAt])
+  @@index([category])
+}
+
+model Like {
+  id          String    @id @default(cuid())
+  userId      String
+  characterId String
+  createdAt   DateTime  @default(now())
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  character   Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, characterId])
+}
+
+model Chat {
+  id          String    @id @default(cuid())
+  title       String?
+  summary     String?   // роллинг-саммари для long-term памяти
+  userId      String
+  characterId String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  character   Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  messages    Message[]
+
+  @@index([userId, updatedAt])
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  chatId    String
+  role      String   // user | assistant | system
+  content   String
+  createdAt DateTime @default(now())
+
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+
+  @@index([chatId, createdAt])
+}
+
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  body      String
+  fromBot   Boolean  @default(false)
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+}

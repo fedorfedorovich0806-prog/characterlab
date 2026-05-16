@@ -1,0 +1,45 @@
+import { NextResponse } from "next/server";
+import { z } from "zod";
+import { prisma } from "@/lib/db";
+import { getCurrentUser } from "@/lib/auth";
+
+const schema = z.object({
+  username: z.string().min(1),
+});
+
+export async function POST(req: Request) {
+  const me = await getCurrentUser();
+  if (!me || me.role !== "admin") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  const body = await req.json().catch(() => null);
+  const parsed = schema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Укажи username" }, { status: 400 });
+  }
+
+  const target = await prisma.user.findUnique({
+    where: { username: parsed.data.username },
+  });
+  if (!target) {
+    return NextResponse.json({ error: "Пользователь не найден" }, { status: 404 });
+  }
+
+  await prisma.user.update({
+    where: { id: target.id },
+    data: { isPremium: true },
+  });
+
+  // Отправляем уведомление от бота
+  await prisma.notification.create({
+    data: {
+      userId: target.id,
+      title: "CharacterLab+",
+      body: `Поздравляем! Тебе выдан CharacterLab+. Теперь доступны умная модель, кастомные темы и расширенные возможности. Спасибо за поддержку! 🎉`,
+      fromBot: true,
+    },
+  });
+
+  return NextResponse.json({ ok: true, username: target.username });
+}
