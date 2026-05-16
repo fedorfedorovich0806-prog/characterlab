@@ -12,6 +12,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export default function LoginPage() {
+  return (
+    <React.Suspense fallback={null}>
+      <LoginForm />
+    </React.Suspense>
+  );
+}
+
+function LoginForm() {
   const router = useRouter();
   const qc = useQueryClient();
   const sp = useSearchParams();
