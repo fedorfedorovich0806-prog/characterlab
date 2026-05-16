@@ -66,6 +66,12 @@ export const api = {
       body: JSON.stringify(body),
     }),
 
+  generateAvatar: (body: { name: string; description?: string; personality?: string; category?: string }) =>
+    request<{ avatarUrl: string; prompt: string }>("/api/characters/generate-avatar", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
+
   listChats: () => request<{ items: any[] }>("/api/chats"),
   createChat: (characterId: string) =>
     request<{ chat: any }>("/api/chats", {

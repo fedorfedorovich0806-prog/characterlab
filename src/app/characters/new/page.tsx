@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Sparkles, Upload, X, FileText } from "lucide-react";
+import { Sparkles, Upload, X, FileText, Wand2 } from "lucide-react";
 import { api } from "@/lib/api";
 import { compressImage } from "@/lib/image";
 import { Button } from "@/components/ui/button";
@@ -83,6 +83,7 @@ export default function NewCharacterPage() {
   const [idea, setIdea] = React.useState("");
   const [busy, setBusy] = React.useState(false);
   const [assisting, setAssisting] = React.useState(false);
+  const [generatingAvatar, setGeneratingAvatar] = React.useState(false);
   const fileRef = React.useRef<HTMLInputElement>(null);
   const knowledgeRef = React.useRef<HTMLInputElement>(null);
 
@@ -126,6 +127,25 @@ export default function NewCharacterPage() {
     upd("knowledge", text);
     toast.success(`Загружено: ${file.name} (${text.length} символов)`);
     e.target.value = "";
+  }
+
+  async function onGenerateAvatar() {
+    if (!d.name) { toast.error("Сначала укажи имя персонажа"); return; }
+    setGeneratingAvatar(true);
+    try {
+      const { avatarUrl } = await api.generateAvatar({
+        name: d.name,
+        description: d.description || undefined,
+        personality: d.personality || undefined,
+        category: d.category || undefined,
+      });
+      upd("avatarUrl", avatarUrl);
+      toast.success("Аватарка сгенерирована!");
+    } catch (e: any) {
+      toast.error(e.message || "Ошибка генерации");
+    } finally {
+      setGeneratingAvatar(false);
+    }
   }
 
   async function onAssist() {
@@ -260,7 +280,7 @@ export default function NewCharacterPage() {
                   className="hidden"
                   onChange={onPickFile}
                 />
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   <Button
                     type="button"
                     variant="outline"
@@ -268,6 +288,15 @@ export default function NewCharacterPage() {
                     onClick={() => fileRef.current?.click()}
                   >
                     <Upload className="h-4 w-4" /> Загрузить аватар
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={onGenerateAvatar}
+                    disabled={generatingAvatar}
+                  >
+                    <Wand2 className="h-4 w-4" /> {generatingAvatar ? "Генерируем..." : "Сгенерировать"}
                   </Button>
                   {d.avatarUrl ? (
                     <Button

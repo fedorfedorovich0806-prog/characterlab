@@ -209,7 +209,7 @@ export default function ChatPage() {
                 )}
               >
                 <Zap className="h-3 w-3" />
-                {smartModel ? "Nemotron 120B (умная)" : "DeepSeek V4 Flash"}
+                {smartModel ? "GPT-5.5 (умная)" : "GPT-5.4"}
               </button>
             </div>
           )}
