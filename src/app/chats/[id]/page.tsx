@@ -94,8 +94,8 @@ export default function ChatPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(
           regenerate
-            ? { regenerate: true, model: smartModel ? "gpt-5.5" : undefined }
-            : { content, model: smartModel ? "gpt-5.5" : undefined },
+            ? { regenerate: true, model: smartModel ? "smart" : undefined }
+            : { content, model: smartModel ? "smart" : undefined },
         ),
         signal: controller.signal,
       });
@@ -209,7 +209,7 @@ export default function ChatPage() {
                 )}
               >
                 <Zap className="h-3 w-3" />
-                {smartModel ? "GPT-5.5 (умная)" : "Стандартная модель"}
+                {smartModel ? "Nemotron 120B (умная)" : "DeepSeek V4 Flash"}
               </button>
             </div>
           )}

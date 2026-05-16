@@ -33,7 +33,7 @@ export async function POST(
 
   // Проверяем доступ к премиум-модели
   const fullUser = await prisma.user.findUnique({ where: { id: me.id }, select: { isPremium: true, persona: true } });
-  const useSmartModel = requestedModel === "gpt-5.5" && fullUser?.isPremium;
+  const useSmartModel = requestedModel === "smart" && fullUser?.isPremium;
   const isPremium = fullUser?.isPremium || false;
 
   const chat = await prisma.chat.findUnique({
@@ -132,7 +132,8 @@ export async function POST(
       let full = "";
       try {
         const maxTokens = isPremium ? 1500 : 800;
-        const groqStream = await streamChat({ messages, temperature: 0.9, maxTokens, model: useSmartModel ? "gpt-5.5" : undefined });
+        const smartModelId = process.env.LLM_MODEL_SMART || "nvidia/nemotron-3-super-120b-a12b:free";
+        const groqStream = await streamChat({ messages, temperature: 0.9, maxTokens, model: useSmartModel ? smartModelId : undefined });
         for await (const chunk of groqStream) {
           const delta = chunk.choices[0]?.delta?.content || "";
           if (delta) {

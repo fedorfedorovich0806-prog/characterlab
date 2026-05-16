@@ -103,6 +103,8 @@ async function httpChat(body: Record<string, unknown>, stream: boolean) {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${apiKey}`,
+      "HTTP-Referer": "https://characterlab.app",
+      "X-Title": "CharacterLab",
     },
     body: JSON.stringify({ model, stream, ...body }),
   });
