@@ -15,7 +15,7 @@ export function Navbar() {
   const [open, setOpen] = React.useState(false);
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur-md">
+    <header className="sticky top-0 z-40 w-full border-b glass">
       <div className="container flex h-14 items-center justify-between gap-4">
         {/* Лого */}
         <Link href="/" className="flex items-center gap-2 font-semibold shrink-0">
