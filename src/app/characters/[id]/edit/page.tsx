@@ -132,6 +132,7 @@ export default function EditCharacterPage() {
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!d) return;
     if (!d.name || !d.description || !d.personality || !d.systemPrompt || !d.greeting) {
       toast.error("Заполни обязательные поля");
       return;
