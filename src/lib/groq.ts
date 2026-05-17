@@ -111,7 +111,15 @@ async function httpChat(body: Record<string, unknown>, stream: boolean) {
   if (!res.ok || !res.body) {
     const text = await res.text().catch(() => "");
     const err: any = new Error(
-      `LLM ${res.status}: ${text.slice(0, 300) || res.statusText}`,
+      res.status === 500
+        ? "Ошибка на стороне провайдера. Попробуй через пару минут."
+        : res.status === 429
+          ? "Превышен лимит запросов. Подожди немного."
+          : res.status === 401
+            ? "Неверный API-ключ."
+            : res.status === 403
+              ? "Доступ запрещён провайдером."
+              : `LLM ${res.status}: ${text.slice(0, 200) || res.statusText}`,
     );
     err.status = res.status;
     throw err;
