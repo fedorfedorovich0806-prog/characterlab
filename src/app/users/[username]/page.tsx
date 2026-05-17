@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { CharacterCard } from "@/components/character-card";
+import { TitleBadge } from "@/components/title-badge";
 import { initials, formatDate } from "@/lib/utils";
 
 export default function UserProfilePage() {
@@ -43,7 +44,14 @@ export default function UserProfilePage() {
   return (
     <div className="container max-w-3xl py-8">
       <Card className="overflow-hidden">
-        <div className="h-28 bg-gradient-to-br from-primary/30 via-primary/10 to-accent" />
+        {/* Баннер */}
+        {user.bannerUrl ? (
+          <div className="h-36 overflow-hidden">
+            <img src={user.bannerUrl} alt="" className="h-full w-full object-cover" />
+          </div>
+        ) : (
+          <div className="h-36 bg-gradient-to-br from-primary/30 via-primary/10 to-accent" />
+        )}
         <CardContent className="relative px-6 pb-6">
           <div className="flex flex-col sm:flex-row items-start gap-4 -mt-14">
             <Avatar className="h-28 w-28 rounded-2xl border-4 border-background shadow-xl">
@@ -61,8 +69,25 @@ export default function UserProfilePage() {
                   </Badge>
                 )}
               </div>
+              {/* Активный титул */}
+              {user.activeTitle && (
+                <div className="mt-1">
+                  {(() => {
+                    const t = user.titles?.find((t: any) => t.name === user.activeTitle);
+                    return t ? <TitleBadge name={t.name} color={t.color} /> : null;
+                  })()}
+                </div>
+              )}
+              {/* Все титулы */}
+              {user.titles?.length > 0 && (
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {user.titles.map((t: any) => (
+                    <TitleBadge key={t.id} name={t.name} color={t.color} />
+                  ))}
+                </div>
+              )}
               {user.bio && (
-                <p className="mt-2 text-muted-foreground">{user.bio}</p>
+                <p className="mt-3 text-muted-foreground">{user.bio}</p>
               )}
               <div className="mt-3 flex items-center gap-4 text-sm text-muted-foreground">
                 <span className="flex items-center gap-1.5">

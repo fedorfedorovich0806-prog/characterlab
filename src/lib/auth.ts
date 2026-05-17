@@ -71,12 +71,15 @@ export async function getCurrentUser() {
       email: true,
       username: true,
       avatarUrl: true,
+      bannerUrl: true,
       bio: true,
       persona: true,
       role: true,
       isPremium: true,
       theme: true,
+      activeTitle: true,
       createdAt: true,
+      titles: { select: { id: true, name: true, color: true } },
     },
   });
   return user;

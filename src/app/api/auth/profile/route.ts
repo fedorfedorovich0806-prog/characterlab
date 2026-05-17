@@ -6,7 +6,9 @@ import { getCurrentUser } from "@/lib/auth";
 const schema = z.object({
   username: z.string().min(3).max(24).regex(/^[a-zA-Z0-9_]+$/).optional(),
   avatarUrl: z.string().max(8_000_000).nullable().optional(),
+  bannerUrl: z.string().max(8_000_000).nullable().optional(),
   bio: z.string().max(500).nullable().optional(),
+  activeTitle: z.string().max(100).nullable().optional(),
 });
 
 export async function PATCH(req: Request) {
@@ -35,7 +37,9 @@ export async function PATCH(req: Request) {
     data: {
       ...(data.username ? { username: data.username } : {}),
       ...(data.avatarUrl !== undefined ? { avatarUrl: data.avatarUrl } : {}),
+      ...(data.bannerUrl !== undefined ? { bannerUrl: data.bannerUrl } : {}),
       ...(data.bio !== undefined ? { bio: data.bio } : {}),
+      ...(data.activeTitle !== undefined ? { activeTitle: data.activeTitle } : {}),
     },
   });
 

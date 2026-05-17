@@ -98,9 +98,9 @@ export default function CharacterPage() {
               ) : null}
 
               <div className="mt-4 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-                <span className="inline-flex items-center gap-1">
+                <a href={`/users/${c.author?.username}`} className="inline-flex items-center gap-1 hover:text-primary transition">
                   <User className="h-3.5 w-3.5" /> @{c.author?.username}
-                </span>
+                </a>
                 <span className="inline-flex items-center gap-1">
                   <MessageCircle className="h-3.5 w-3.5" /> {c.messagesCount}
                 </span>

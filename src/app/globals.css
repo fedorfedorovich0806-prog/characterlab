@@ -131,3 +131,36 @@ button, a, input, textarea, select {
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+
+/* Переливающиеся титулы */
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.title-badge {
+  background-size: 200% auto;
+  animation: shimmer 3s linear infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.title-gold {
+  background-image: linear-gradient(90deg, #f59e0b, #fbbf24, #f59e0b, #d97706, #f59e0b);
+}
+.title-red {
+  background-image: linear-gradient(90deg, #ef4444, #f87171, #ef4444, #dc2626, #ef4444);
+}
+.title-blue {
+  background-image: linear-gradient(90deg, #3b82f6, #60a5fa, #3b82f6, #2563eb, #3b82f6);
+}
+.title-purple {
+  background-image: linear-gradient(90deg, #8b5cf6, #a78bfa, #8b5cf6, #7c3aed, #8b5cf6);
+}
+.title-green {
+  background-image: linear-gradient(90deg, #10b981, #34d399, #10b981, #059669, #10b981);
+}

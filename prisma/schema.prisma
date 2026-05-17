@@ -16,18 +16,23 @@ model User {
   username     String      @unique
   passwordHash String
   avatarUrl    String?
+  bannerUrl    String?     // баннер профиля
   bio          String?
   persona      String?     // описание себя для персонажей
   role         String      @default("user") // user | admin
   isPremium    Boolean     @default(false)
   theme        String?     // кастомная тема (для Plus)
+  activeTitle  String?     // текущий выбранный титул
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
 
-  characters   Character[] @relation("AuthorCharacters")
-  chats        Chat[]
-  likes        Like[]
+  characters    Character[] @relation("AuthorCharacters")
+  chats         Chat[]
+  likes         Like[]
   notifications Notification[]
+  titles        Title[]
+  achievements  Achievement[]
+  reports       Report[]     @relation("ReportAuthor")
 }
 
 model Character {
@@ -115,4 +120,49 @@ model Notification {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, createdAt])
+}
+
+
+model Title {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String   // "Администратор", "Тех.поддержка", "Ветеран", etc.
+  color     String   @default("gold") // gold | red | blue | purple | green
+  grantedBy String?  // кто выдал (admin id)
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Achievement {
+  id        String   @id @default(cuid())
+  userId    String
+  key       String   // first_character, first_chat, popular_character, etc.
+  name      String
+  icon      String?
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, key])
+  @@index([userId])
+}
+
+model Report {
+  id          String   @id @default(cuid())
+  authorId    String
+  targetType  String   // character | user | chat
+  targetId    String
+  reason      String
+  status      String   @default("open") // open | reviewed | closed
+  reviewedBy  String?
+  reviewNote  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  author      User     @relation("ReportAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([status, createdAt])
 }
