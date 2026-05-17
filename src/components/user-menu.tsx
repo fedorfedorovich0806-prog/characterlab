@@ -78,6 +78,9 @@ export function UserMenu() {
         <DropdownMenuItem onClick={() => router.push("/notifications")}>
           Уведомления
         </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => router.push("/achievements")}>
+          Достижения
+        </DropdownMenuItem>
         {!user.isPremium && (
           <DropdownMenuItem onClick={() => router.push("/plus")}>
             <Crown className="h-3.5 w-3.5 mr-1 text-primary" /> CharacterLab+
@@ -91,6 +94,9 @@ export function UserMenu() {
         )}
         <DropdownMenuItem onClick={() => router.push("/rules")}>
           Правила
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => router.push("/report")} className="text-destructive">
+          Пожаловаться
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={logout}>Выйти</DropdownMenuItem>
