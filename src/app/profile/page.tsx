@@ -20,6 +20,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CharacterCard } from "@/components/character-card";
+import { TitleBadge } from "@/components/title-badge";
 import { cn, initials, formatDate } from "@/lib/utils";
 
 export default function ProfilePage() {
@@ -155,13 +156,21 @@ export default function ProfilePage() {
             </div>
             <div className="flex-1 min-w-0 pt-2 sm:pt-6">
               <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="text-xl font-semibold">@{user.username}</h1>
+                <h1 className="text-xl font-semibold">{user.username}</h1>
                 {user.isPremium && (
                   <Badge className="bg-primary/20 text-primary border-primary/30">
                     <Crown className="h-3 w-3 mr-0.5" /> Plus
                   </Badge>
                 )}
               </div>
+              {user.activeTitle && user.titles && (
+                <div className="mt-1">
+                  {(() => {
+                    const t = user.titles.find((t: any) => t.name === user.activeTitle);
+                    return t ? <TitleBadge name={t.name} color={t.color} /> : null;
+                  })()}
+                </div>
+              )}
               {user.bio && <p className="mt-1 text-sm text-muted-foreground">{user.bio}</p>}
               <div className="mt-2 flex items-center gap-4 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1">

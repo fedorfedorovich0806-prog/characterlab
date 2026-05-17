@@ -62,28 +62,20 @@ export default function UserProfilePage() {
             </Avatar>
             <div className="flex-1 min-w-0 pt-2 sm:pt-8">
               <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="text-2xl font-bold">@{user.username}</h1>
+                <h1 className="text-2xl font-bold">{user.username}</h1>
                 {user.isPremium && (
                   <Badge className="bg-primary/20 text-primary border-primary/30">
                     <Crown className="h-3 w-3 mr-0.5" /> Plus
                   </Badge>
                 )}
               </div>
-              {/* Активный титул */}
+              {/* Только активный титул */}
               {user.activeTitle && (
                 <div className="mt-1">
                   {(() => {
                     const t = user.titles?.find((t: any) => t.name === user.activeTitle);
                     return t ? <TitleBadge name={t.name} color={t.color} /> : null;
                   })()}
-                </div>
-              )}
-              {/* Все титулы */}
-              {user.titles?.length > 0 && (
-                <div className="mt-2 flex flex-wrap gap-1.5">
-                  {user.titles.map((t: any) => (
-                    <TitleBadge key={t.id} name={t.name} color={t.color} />
-                  ))}
                 </div>
               )}
               {user.bio && (
