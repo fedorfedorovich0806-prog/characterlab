@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
+import { checkAchievements } from "@/lib/achievements";
 
 export async function GET(req: Request) {
   const url = new URL(req.url);
@@ -122,6 +123,9 @@ export async function POST(req: Request) {
       authorId: me.id,
     },
   });
+
+  // Проверяем достижения (фоново)
+  checkAchievements(me.id).catch(() => {});
 
   return NextResponse.json({ character });
 }

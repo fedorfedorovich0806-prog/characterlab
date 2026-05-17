@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
+import { checkAchievements } from "@/lib/achievements";
 import {
   buildSystemPrompt,
   ChatMsg,
@@ -164,6 +165,8 @@ export async function POST(
               data: { messagesCount: { increment: 1 } },
             });
           }
+          // Проверяем достижения
+          checkAchievements(me.id).catch(() => {});
         } catch {}
         controller.close();
       }
