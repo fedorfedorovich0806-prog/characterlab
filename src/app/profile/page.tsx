@@ -37,6 +37,7 @@ export default function ProfilePage() {
   const [username, setUsername] = React.useState("");
   const [bio, setBio] = React.useState("");
   const [avatarUrl, setAvatarUrl] = React.useState<string | null>(null);
+  const [activeTitle, setActiveTitle] = React.useState<string | null>(null);
   const [busy, setBusy] = React.useState(false);
   const [improving, setImproving] = React.useState(false);
   const [savingProfile, setSavingProfile] = React.useState(false);
@@ -49,6 +50,7 @@ export default function ProfilePage() {
       setUsername(user.username || "");
       setBio(user.bio || "");
       setAvatarUrl(user.avatarUrl || null);
+      setActiveTitle(user.activeTitle || null);
       loaded.current = true;
     }
   }, [user]);
@@ -79,7 +81,7 @@ export default function ProfilePage() {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ username, avatarUrl, bio }),
+        body: JSON.stringify({ username, avatarUrl, bio, activeTitle }),
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error);
@@ -227,6 +229,36 @@ export default function ProfilePage() {
                   )}
                 </div>
               </div>
+              <Separator />
+              {/* Выбор титула */}
+              {user.titles && user.titles.length > 0 && (
+                <div className="space-y-2">
+                  <Label>Активный титул</Label>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      onClick={() => setActiveTitle(null)}
+                      className={cn(
+                        "rounded-full border px-3 py-1 text-xs transition",
+                        !activeTitle ? "border-foreground bg-secondary" : "border-border hover:bg-secondary",
+                      )}
+                    >
+                      Без титула
+                    </button>
+                    {user.titles.map((t: any) => (
+                      <button
+                        key={t.id}
+                        onClick={() => setActiveTitle(t.name)}
+                        className={cn(
+                          "rounded-full border px-3 py-1 text-xs transition",
+                          activeTitle === t.name ? "border-foreground bg-secondary" : "border-border hover:bg-secondary",
+                        )}
+                      >
+                        <span className={`title-badge title-${t.color}`}>{t.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
               <Separator />
               <Button onClick={saveProfile} disabled={savingProfile}>
                 <Save className="h-4 w-4" /> {savingProfile ? "Сохраняем..." : "Сохранить профиль"}

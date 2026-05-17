@@ -66,7 +66,10 @@ export function UserMenu() {
         <DropdownMenuLabel className="truncate">{user.email}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => router.push("/profile")}>
-          Профиль / Персона
+          Профиль
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => router.push("/persona")}>
+          Персона
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => router.push("/characters/new")}>
           Создать персонажа
